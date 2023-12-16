@@ -1,0 +1,173 @@
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    11/17/2023  22:09:24  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
+F:\KEIL5\C51\BIN\BL51.EXE .\Objects\main.obj TO .\Objects\project PRINT (.\Listings\project.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\main.obj (MAIN)
+  F:\KEIL5\C51\LIB\C51S.LIB (?C_STARTUP)
+  F:\KEIL5\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\Objects\project (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     000AH     UNIT         ?DT?MAIN
+            IDATA   0012H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     008CH     UNIT         ?C_C51STARTUP
+            CODE    008FH     006DH     UNIT         ?PR?_NIXIETUBE_DISPLAY?MAIN
+            CODE    00FCH     001EH     UNIT         ?PR?MAIN?MAIN
+            CODE    011AH     0019H     UNIT         ?PR?_DELAY?MAIN
+            CODE    0133H     000DH     UNIT         ?C_INITSEG
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\project (MAIN)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?MAIN
+  +--> ?C_INITSEG
+
+?PR?MAIN?MAIN
+  +--> ?PR?_NIXIETUBE_DISPLAY?MAIN
+
+?PR?_NIXIETUBE_DISPLAY?MAIN
+  +--> ?PR?_DELAY?MAIN
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\project (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  11/17/2023  22:09:24  PAGE 2
+
+
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:00E8H         PUBLIC        P4
+  D:00A8H         PUBLIC        IE
+  B:00A0H.2       PUBLIC        P2_2
+  B:00A0H.3       PUBLIC        P2_3
+  B:00A0H.4       PUBLIC        P2_4
+  D:00B8H         PUBLIC        IP
+  C:00FCH         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  C:008FH         PUBLIC        _NixieTube_Display
+  D:00C8H         PUBLIC        T2CON
+  D:0008H         PUBLIC        NixieTable
+  C:011AH         PUBLIC        _Delay
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          _DELAY
+  D:0006H         SYMBOL        xms
+  -------         DO            
+  D:0005H         SYMBOL        i
+  D:0004H         SYMBOL        j
+  -------         ENDDO         
+  C:011AH         LINE#         233
+  C:011AH         LINE#         234
+  C:011AH         LINE#         237
+  C:0123H         LINE#         238
+  C:0123H         LINE#         239
+  C:0125H         LINE#         240
+  C:0127H         LINE#         242
+  C:0127H         LINE#         243
+  C:0129H         LINE#         244
+  C:012BH         LINE#         245
+  C:0130H         LINE#         246
+  C:0132H         LINE#         247
+  -------         ENDPROC       _DELAY
+  -------         PROC          _NIXIETUBE_DISPLAY
+  D:0007H         SYMBOL        location
+  D:0005H         SYMBOL        num
+  C:008FH         LINE#         5
+  C:008FH         LINE#         6
+  C:008FH         LINE#         7
+  C:00BCH         LINE#         8
+  C:00BCH         LINE#         9
+  C:00BCH         LINE#         10
+  C:00BEH         LINE#         11
+  C:00BEH         LINE#         12
+  C:00BEH         LINE#         13
+  C:00C0H         LINE#         14
+  C:00C0H         LINE#         15
+  C:00C2H         LINE#         16
+  C:00C2H         LINE#         17
+  C:00C2H         LINE#         18
+  C:00C4H         LINE#         19
+  C:00C4H         LINE#         20
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  11/17/2023  22:09:24  PAGE 3
+
+
+  C:00C6H         LINE#         21
+  C:00C6H         LINE#         22
+  C:00C6H         LINE#         23
+  C:00C8H         LINE#         24
+  C:00C8H         LINE#         25
+  C:00CAH         LINE#         26
+  C:00CAH         LINE#         27
+  C:00CAH         LINE#         28
+  C:00CCH         LINE#         29
+  C:00CCH         LINE#         30
+  C:00CEH         LINE#         31
+  C:00D0H         LINE#         32
+  C:00D2H         LINE#         33
+  C:00D4H         LINE#         34
+  C:00D4H         LINE#         35
+  C:00D6H         LINE#         36
+  C:00D8H         LINE#         37
+  C:00DAH         LINE#         38
+  C:00DCH         LINE#         39
+  C:00DCH         LINE#         40
+  C:00DEH         LINE#         41
+  C:00E0H         LINE#         42
+  C:00E2H         LINE#         43
+  C:00E4H         LINE#         44
+  C:00E4H         LINE#         45
+  C:00E6H         LINE#         46
+  C:00E8H         LINE#         47
+  C:00EAH         LINE#         48
+  C:00EAH         LINE#         49
+  C:00EAH         LINE#         50
+  C:00F1H         LINE#         51
+  C:00F8H         LINE#         53
+  C:00FBH         LINE#         55
+  -------         ENDPROC       _NIXIETUBE_DISPLAY
+  -------         PROC          MAIN
+  C:00FCH         LINE#         57
+  C:00FCH         LINE#         58
+  C:00FCH         LINE#         59
+  C:0103H         LINE#         60
+  C:0103H         LINE#         61
+  C:0103H         LINE#         62
+  C:010AH         LINE#         64
+  C:0111H         LINE#         66
+  C:0118H         LINE#         69
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+Program Size: data=19.0 xdata=0 code=320
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

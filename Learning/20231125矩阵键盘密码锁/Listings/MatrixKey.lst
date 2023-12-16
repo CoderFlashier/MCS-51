@@ -1,0 +1,155 @@
+C51 COMPILER V9.60.7.0   MATRIXKEY                                                         11/25/2023 19:13:41 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MATRIXKEY
+OBJECT MODULE PLACED IN .\Objects\MatrixKey.obj
+COMPILER INVOKED BY: F:\keil5\C51\BIN\C51.EXE MatrixKey.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\M
+                    -atrixKey.lst) TABS(2) OBJECT(.\Objects\MatrixKey.obj)
+
+line level    source
+
+   1          #include<STC89C5xRC.H>
+   2          #include"Delay.h"
+   3          
+   4          /**
+   5            * @brief 矩阵键盘读取按键键码
+   6            * @param 无
+   7            * @retval KeyNumber 按下按键的键码值
+   8            * 如果按下按键不放，程序会停留在此函数，松手的一瞬间返回按键键码
+   9            * 没有按键时，返回0
+  10          **/
+  11          
+  12          unsigned char MatrixKey()
+  13          {
+  14   1          unsigned char KeyNumber = 0;
+  15   1      
+  16   1          P1 = 0xff;
+  17   1          P13 = 0;
+  18   1          //除了P13以外全部置1
+  19   1          if(P17 == 0)
+  20   1          {
+  21   2              Delay(20);
+  22   2              while(P17 == 0);
+  23   2              KeyNumber = 1;
+  24   2          }
+  25   1            if(P16 == 0)
+  26   1          {
+  27   2              Delay(20);
+  28   2              while(P16 == 0);
+  29   2              KeyNumber = 5;
+  30   2          }
+  31   1            if(P15 == 0)
+  32   1          {
+  33   2              Delay(20);
+  34   2              while(P15 == 0);
+  35   2              KeyNumber = 9;
+  36   2          }
+  37   1            if(P14 == 0)
+  38   1          {
+  39   2              Delay(20);
+  40   2              while(P14 == 0);
+  41   2              KeyNumber = 13;
+  42   2          }
+  43   1          //扫描第一列
+  44   1      
+  45   1          P1 = 0xff;
+  46   1          P12 = 0;
+  47   1          if(P17 == 0)
+  48   1          {
+  49   2              Delay(20);
+  50   2              while(P17 == 0);
+  51   2              KeyNumber = 2;
+  52   2          }
+  53   1            if(P16 == 0)
+  54   1          {
+C51 COMPILER V9.60.7.0   MATRIXKEY                                                         11/25/2023 19:13:41 PAGE 2   
+
+  55   2              Delay(20);
+  56   2              while(P16 == 0);
+  57   2              KeyNumber = 6;
+  58   2          }
+  59   1            if(P15 == 0)
+  60   1          {
+  61   2              Delay(20);
+  62   2              while(P15 == 0);
+  63   2              KeyNumber = 10;
+  64   2          }
+  65   1            if(P14 == 0)
+  66   1          {
+  67   2              Delay(20);
+  68   2              while(P14 == 0);
+  69   2              KeyNumber = 14;
+  70   2          }
+  71   1      
+  72   1          P1 = 0xff;
+  73   1          P11 = 0;
+  74   1          if(P17 == 0)
+  75   1          {
+  76   2              Delay(20);
+  77   2              while(P17 == 0);
+  78   2              KeyNumber = 3;
+  79   2          }
+  80   1            if(P16 == 0)
+  81   1          {
+  82   2              Delay(20);
+  83   2              while(P16 == 0);
+  84   2              KeyNumber = 7;
+  85   2          }
+  86   1            if(P15 == 0)
+  87   1          {
+  88   2              Delay(20);
+  89   2              while(P15 == 0);
+  90   2              KeyNumber = 11;
+  91   2          }
+  92   1            if(P14 == 0)
+  93   1          {
+  94   2              Delay(20);
+  95   2              while(P14 == 0);
+  96   2              KeyNumber = 15;
+  97   2          }
+  98   1      
+  99   1          P1 = 0xff;
+ 100   1          P10 = 0;
+ 101   1          if(P17 == 0)
+ 102   1          {
+ 103   2              Delay(20);
+ 104   2              while(P17 == 0);
+ 105   2              KeyNumber = 4;
+ 106   2          }
+ 107   1            if(P16 == 0)
+ 108   1          {
+ 109   2              Delay(20);
+ 110   2              while(P16 == 0);
+ 111   2              KeyNumber = 8;
+ 112   2          }
+ 113   1            if(P15 == 0)
+ 114   1          {
+ 115   2              Delay(20);
+ 116   2              while(P15 == 0);
+C51 COMPILER V9.60.7.0   MATRIXKEY                                                         11/25/2023 19:13:41 PAGE 3   
+
+ 117   2              KeyNumber = 12;
+ 118   2          }
+ 119   1            if(P14 == 0)
+ 120   1          {
+ 121   2              Delay(20);
+ 122   2              while(P14 == 0);
+ 123   2              KeyNumber = 16;
+ 124   2          }
+ 125   1      
+ 126   1          return KeyNumber;
+ 127   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    281    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

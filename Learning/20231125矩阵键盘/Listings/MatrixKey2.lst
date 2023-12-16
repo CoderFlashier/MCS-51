@@ -1,0 +1,119 @@
+C51 COMPILER V9.60.7.0   MATRIXKEY2                                                        12/14/2023 13:17:46 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MATRIXKEY2
+OBJECT MODULE PLACED IN .\Objects\MatrixKey2.obj
+COMPILER INVOKED BY: F:\keil5\C51\BIN\C51.EXE MatrixKey2.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\
+                    -MatrixKey2.lst) TABS(2) OBJECT(.\Objects\MatrixKey2.obj)
+
+line level    source
+
+   1          #include<STC89C5xRC.H>
+   2          #include"Delay.h"
+   3          
+   4          /**
+   5            * @brief 矩阵键盘读取按键键码
+   6            * @param 无
+   7            * @retval KeyNumber 按下按键的键码值
+   8            * 如果按下按键不放，程序会停留在此函数，松手的一瞬间返回按键键码
+   9            * 没有按键时，返回0
+  10          **/
+  11          
+  12          unsigned char MatrixKey2()
+  13          {
+  14   1          unsigned char Keynumber = 0;
+  15   1      
+  16   1          P1 = 0xff;
+  17   1          P17 = 0;
+  18   1          if(P13 == 0)
+  19   1          {
+  20   2              Keynumber = 1;
+  21   2          }
+  22   1          if(P12 == 0)
+  23   1          {
+  24   2              Keynumber = 2;
+  25   2          }
+  26   1          if(P11 == 0)
+  27   1          {
+  28   2              Keynumber = 3;
+  29   2          }
+  30   1          if(P10 == 0)
+  31   1          {
+  32   2              Keynumber = 4;
+  33   2          }
+  34   1      
+  35   1          P1 = 0xff;
+  36   1          P16 = 0;
+  37   1          if(P13 == 0)
+  38   1          {
+  39   2              Keynumber = 5;
+  40   2          }
+  41   1          if(P12 == 0)
+  42   1          {
+  43   2              Keynumber = 6;
+  44   2          }
+  45   1          if(P11 == 0)
+  46   1          {
+  47   2              Keynumber = 7;
+  48   2          }
+  49   1          if(P10 == 0)
+  50   1          {
+  51   2              Keynumber = 8;
+  52   2          }
+  53   1      
+  54   1          P1 = 0xff;
+C51 COMPILER V9.60.7.0   MATRIXKEY2                                                        12/14/2023 13:17:46 PAGE 2   
+
+  55   1          P15 = 0;
+  56   1          if(P13 == 0)
+  57   1          {
+  58   2              Keynumber = 9;
+  59   2          }
+  60   1          if(P12 == 0)
+  61   1          {
+  62   2              Keynumber = 10;
+  63   2          }
+  64   1          if(P11 == 0)
+  65   1          {
+  66   2              Keynumber = 11;
+  67   2          }
+  68   1          if(P10 == 0)
+  69   1          {
+  70   2              Keynumber = 12;
+  71   2          }
+  72   1      
+  73   1          P1 = 0xff;
+  74   1          P14 = 0;
+  75   1          if(P13 == 0)
+  76   1          {
+  77   2              Keynumber = 13;
+  78   2          }
+  79   1          if(P12 == 0)
+  80   1          {
+  81   2              Keynumber = 14;
+  82   2          }
+  83   1          if(P11 == 0)
+  84   1          {
+  85   2              Keynumber = 15;
+  86   2          }
+  87   1          if(P10 == 0)
+  88   1          {
+  89   2              Keynumber = 16;
+  90   2          }
+  91   1      
+  92   1          return Keynumber;
+  93   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    102    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

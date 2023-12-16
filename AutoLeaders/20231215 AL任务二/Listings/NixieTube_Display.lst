@@ -1,0 +1,190 @@
+C51 COMPILER V9.60.7.0   NIXIETUBE_DISPLAY                                                 12/16/2023 14:30:07 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE NIXIETUBE_DISPLAY
+OBJECT MODULE PLACED IN .\Objects\NixieTube_Display.obj
+COMPILER INVOKED BY: F:\keil5\C51\BIN\C51.EXE NixieTube_Display.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Li
+                    -stings\NixieTube_Display.lst) TABS(2) OBJECT(.\Objects\NixieTube_Display.obj)
+
+line level    source
+
+   1          #include<STC89C5xRC.H>
+   2          #include "Delay.h"
+   3          #include "DS1302.h"
+   4          #include "Uart.h"
+   5          
+   6          //0， 1， 2， 3， 4， 5， 6， 7， 8， 9, -, ., C, L, O对应的段码
+   7          unsigned char NixieTable[15] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x40, 0x80, 0x
+             -39, 0x38, 0x3F};
+   8          
+   9          void NixieTube_Display(unsigned char location, unsigned char num)
+  10          //分别传入显示位置、显示内容
+  11          {
+  12   1          switch(location)
+  13   1          //选择显示位置
+  14   1          {
+  15   2              case 1:
+  16   2                  P24 = 1;
+  17   2                  P23 = 1;
+  18   2                  P22 = 1;
+  19   2                  break;
+  20   2      
+  21   2              case 2:
+  22   2                  P24 = 1;
+  23   2                  P23 = 1;
+  24   2                  P22 = 0;
+  25   2                  break;
+  26   2      
+  27   2              case 3:
+  28   2                  P24 = 1;
+  29   2                  P23 = 0;
+  30   2                  P22 = 1;
+  31   2                  break;
+  32   2      
+  33   2              case 4:
+  34   2                  P24 = 1;
+  35   2                  P23 = 0;
+  36   2                  P22 = 0;
+  37   2                  break;
+  38   2      
+  39   2              case 5:
+  40   2                  P24 = 0;
+  41   2                  P23 = 1;
+  42   2                  P22 = 1;
+  43   2                  break;
+  44   2      
+  45   2              case 6:
+  46   2                  P24 = 0;
+  47   2                  P23 = 1;
+  48   2                  P22 = 0;
+  49   2                  break;
+  50   2      
+  51   2              case 7:
+  52   2                  P24 = 0;
+  53   2                  P23 = 0;
+C51 COMPILER V9.60.7.0   NIXIETUBE_DISPLAY                                                 12/16/2023 14:30:07 PAGE 2   
+
+  54   2                  P22 = 1;
+  55   2                  break;
+  56   2      
+  57   2              case 8:
+  58   2                  P24 = 0;
+  59   2                  P23 = 0;
+  60   2                  P22 = 0;
+  61   2                  break;
+  62   2          }
+  63   1      
+  64   1          P0 =  NixieTable[num];
+  65   1          Delay(1);
+  66   1          //让数码管稳定显示，否则亮度会变低
+  67   1          //注意STC89C52RC的晶振频率为11.0592MHz，在创建延时函数时应注意选择
+  68   1          P0 = 0x00;
+  69   1          //清零
+  70   1      }
+  71          
+  72          extern unsigned char Flicker_Mark;//调用外部变量
+  73          extern unsigned char Is_Clock_On;
+  74          void NixieTube_DisplayTime(unsigned char Time, unsigned char Flicker_Select)
+  75          //数码管显示时间
+  76          {    
+  77   1          if(Flicker_Select == 0)//正常显示，不闪烁
+  78   1          {
+  79   2              NixieTube_Display(1, DS1302_Time[Time][0] / 10);
+  80   2              NixieTube_Display(2, DS1302_Time[Time][0] % 10);
+  81   2              
+  82   2              NixieTube_Display(4, DS1302_Time[Time][1] / 10);
+  83   2              NixieTube_Display(5, DS1302_Time[Time][1] % 10);
+  84   2              
+  85   2              NixieTube_Display(7, DS1302_Time[Time][2] / 10);
+  86   2              NixieTube_Display(8, DS1302_Time[Time][2] % 10);
+  87   2      
+  88   2              if(Flicker_Mark == 0)
+  89   2              {
+  90   3                  NixieTube_Display(3, 10);
+  91   3                  NixieTube_Display(6, 10);
+  92   3              }
+  93   2          }
+  94   1      
+  95   1          if(Flicker_Select == 1)//时闪烁
+  96   1          {
+  97   2              if(Flicker_Mark == 0)
+  98   2              {
+  99   3                  NixieTube_Display(1, DS1302_Time[Time][0] / 10);
+ 100   3                  NixieTube_Display(2, DS1302_Time[Time][0] % 10);
+ 101   3              }
+ 102   2          
+ 103   2              NixieTube_Display(4, DS1302_Time[Time][1] / 10);
+ 104   2              NixieTube_Display(5, DS1302_Time[Time][1] % 10);
+ 105   2              
+ 106   2              NixieTube_Display(7, DS1302_Time[Time][2] / 10);
+ 107   2              NixieTube_Display(8, DS1302_Time[Time][2] % 10);
+ 108   2      
+ 109   2              NixieTube_Display(3, 10);
+ 110   2              NixieTube_Display(6, 10);
+ 111   2          }
+ 112   1      
+ 113   1          if(Flicker_Select == 2)//分闪烁
+ 114   1          {
+ 115   2              NixieTube_Display(1, DS1302_Time[Time][0] / 10);
+C51 COMPILER V9.60.7.0   NIXIETUBE_DISPLAY                                                 12/16/2023 14:30:07 PAGE 3   
+
+ 116   2              NixieTube_Display(2, DS1302_Time[Time][0] % 10);
+ 117   2              
+ 118   2              if(Flicker_Mark == 0)
+ 119   2              {
+ 120   3                  NixieTube_Display(4, DS1302_Time[Time][1] / 10);
+ 121   3                  NixieTube_Display(5, DS1302_Time[Time][1] % 10);
+ 122   3              }
+ 123   2              
+ 124   2              NixieTube_Display(7, DS1302_Time[Time][2] / 10);
+ 125   2              NixieTube_Display(8, DS1302_Time[Time][2] % 10);
+ 126   2      
+ 127   2              NixieTube_Display(3, 10);
+ 128   2              NixieTube_Display(6, 10);
+ 129   2          }
+ 130   1      
+ 131   1          if(Flicker_Select == 3)//秒闪烁
+ 132   1          {
+ 133   2              NixieTube_Display(1, DS1302_Time[Time][0] / 10);
+ 134   2              NixieTube_Display(2, DS1302_Time[Time][0] % 10);
+ 135   2              
+ 136   2              NixieTube_Display(4, DS1302_Time[Time][1] / 10);
+ 137   2              NixieTube_Display(5, DS1302_Time[Time][1] % 10);
+ 138   2              
+ 139   2              if(Flicker_Mark == 0)
+ 140   2              {
+ 141   3                  NixieTube_Display(7, DS1302_Time[Time][2] / 10);
+ 142   3                  NixieTube_Display(8, DS1302_Time[Time][2] % 10);
+ 143   3              }
+ 144   2      
+ 145   2              NixieTube_Display(3, 10);
+ 146   2              NixieTube_Display(6, 10);
+ 147   2          }
+ 148   1      }
+ 149          
+ 150          
+ 151          void NixieTube_DisplayAlarm()
+ 152          //显示CLOC作为闹钟响起的标志
+ 153          {
+ 154   1          if(Flicker_Mark == 0)
+ 155   1          {
+ 156   2              NixieTube_Display(1, 12);
+ 157   2              NixieTube_Display(2, 13);
+ 158   2              NixieTube_Display(3, 14);
+ 159   2              NixieTube_Display(4, 12);
+ 160   2          }
+ 161   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    753    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     15       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

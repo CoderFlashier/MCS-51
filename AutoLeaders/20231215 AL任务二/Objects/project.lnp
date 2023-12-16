@@ -1,0 +1,9 @@
+".\Objects\main.obj",
+".\Objects\DS1302.obj",
+".\Objects\Delay.obj",
+".\Objects\NixieTube_Display.obj",
+".\Objects\Uart.obj",
+".\Objects\Timer0.obj",
+".\Objects\MatrixKey.obj" 
+TO ".\Objects\project" 
+PRINT(".\Listings\project.m51") RAMSIZE(256) 

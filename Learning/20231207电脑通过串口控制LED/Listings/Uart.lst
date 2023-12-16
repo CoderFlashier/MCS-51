@@ -1,0 +1,100 @@
+C51 COMPILER V9.60.7.0   UART                                                              12/07/2023 22:49:35 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE UART
+OBJECT MODULE PLACED IN .\Objects\Uart.obj
+COMPILER INVOKED BY: F:\keil5\C51\BIN\C51.EXE Uart.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\Uart.l
+                    -st) TABS(2) OBJECT(.\Objects\Uart.obj)
+
+line level    source
+
+   1          #include <STC89C5xRC.H>
+   2          
+   3          /**
+   4           * @brief 串口初始化
+   5           * @param 无
+   6           * @retval 无
+   7           */
+   8          
+   9          
+  10          void Uart_Init(void)  //9600bps@11.0592MHz
+  11          {
+  12   1        PCON &= 0x7F;   //波特率不倍速
+  13   1        SCON = 0x50;    //8位数据,可变波特率
+  14   1        AUXR &= 0xBF;   //定时器时钟12T模式
+  15   1        AUXR &= 0xFE;   //串口1选择定时器1为波特率发生器
+  16   1        TMOD &= 0x0F;   //设置定时器模式
+  17   1        TMOD |= 0x20;   //设置定时器模式
+  18   1        TL1 = 0xFD;     //设置定时初始值
+  19   1        TH1 = 0xFD;     //设置定时重载值
+  20   1        ET1 = 0;      //禁止定时器1中断，这里要用的是串口中断，不是定时器中断
+  21   1        TR1 = 1;      //定时器1开始计时
+  22   1        EA = 1;//启动所有中断
+  23   1        ES = 1;//启动串口中断
+  24   1      }
+  25          
+  26          
+  27          // void Uart_Init()//4800bps@11.0592MHz
+  28          // //初始化寄存器
+  29          // {
+  30          //     SCON = 0x40;
+  31          //     PCON = 0;
+  32          //     //此处不需要配置中断
+  33          
+  34          //     //配置定时器1
+  35          //  TMOD &= 0x0F;       //TMOD高四位置0
+  36          //  TMOD |= 0x20;       //串口需要用“8位自动重装”模式
+  37          //     TL1 = 0xFA;      //设置定时初始值
+  38          //  TH1 = 0xFA;     //设置定时重载值
+  39          //  ET1 = 0;      //禁止定时器中断
+  40          //  TR1 = 1;      //定时器1开始计时
+  41          // }
+  42          
+  43          
+  44          /**
+  45           * @brief 串口发送一个字节的数据
+  46           * @param 一个字节的数据
+  47           * @retval 无
+  48           */
+  49          
+  50          
+  51          void Uart_SendByte(unsigned int Byte)
+  52          //发送数据
+  53          {
+  54   1          SBUF = Byte;
+C51 COMPILER V9.60.7.0   UART                                                              12/07/2023 22:49:35 PAGE 2   
+
+  55   1          //将数据写入SBUF
+  56   1          while(TI == 0);
+  57   1          //当发送未完成，保持在函数内
+  58   1      
+  59   1          TI = 0;
+  60   1          //重置TI
+  61   1      }
+  62          
+  63          
+  64          
+  65          //串口接收数据中断函数模板
+  66          /*
+  67          void Uart_Routine() interrupt 4
+  68          {
+  69            if(RI == 1)
+  70              {
+  71                  
+  72              }
+  73          }
+  74          */
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     41    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

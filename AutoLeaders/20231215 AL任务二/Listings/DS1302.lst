@@ -1,0 +1,253 @@
+C51 COMPILER V9.60.7.0   DS1302                                                            12/16/2023 14:39:45 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE DS1302
+OBJECT MODULE PLACED IN .\Objects\DS1302.obj
+COMPILER INVOKED BY: F:\keil5\C51\BIN\C51.EXE DS1302.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\DS13
+                    -02.lst) TABS(2) OBJECT(.\Objects\DS1302.obj)
+
+line level    source
+
+   1          #include <STC89C5xRC.H>
+   2          #include "MatrixKey.h"
+   3          #include "NixieTube_Display.h"
+   4          
+   5          //对端口重定义
+   6          sbit DS1302_SCLK = P3^6;
+   7          sbit DS1302_IO = P3^4;
+   8          sbit DS1302_CE = P3^5;
+   9          
+  10          
+  11          #define DS1302_SECOND 0x80
+  12          #define DS1302_MINUTE 0x82 
+  13          #define DS1302_HOUR 0x84 
+  14          #define DS1302_DATE 0x86
+  15          #define DS1302_MONTH 0x88
+  16          #define DS1302_DAY 0x8a
+  17          #define DS1302_YEAR 0x8c
+  18          #define DS1302_WP 0x8e
+  19          
+  20          
+  21          void DS1302_Init();
+  22          void DS1302_Write(unsigned char Command, unsigned char Data);
+  23          unsigned char DS1302_Read(unsigned char Command);
+  24          void DS1302_SetTime();
+  25          void DS1302_ReadTime();
+  26          unsigned char DEC_To_BCD(unsigned char DEC_Num);
+  27          unsigned char BCD_To_DEC(unsigned char BCD_Num);
+  28          void DS1302_TimeChange(unsigned char Change_Mode);
+  29          
+  30          
+  31          
+  32          char DS1302_Time[2][3] = {{12, 0, 0}, {12, 0, 0}};
+  33          //分别用于计时、闹钟
+  34          
+  35          
+  36          void DS1302_Init()
+  37          //初始化DS1302
+  38          {
+  39   1          DS1302_CE = 0;//使能
+  40   1          DS1302_SCLK = 0;//串行时钟置0
+  41   1      }
+  42          
+  43          
+  44          void DS1302_Write(unsigned char Command, unsigned char Data)
+  45          //写入数据
+  46          {
+  47   1          unsigned char i = 0;
+  48   1          DS1302_CE = 1;//停止运行
+  49   1          for(i = 0; i < 8; i++)
+  50   1          {
+  51   2              DS1302_IO = Command & (0x01 << i);
+  52   2              DS1302_SCLK = 1;
+  53   2              DS1302_SCLK = 0;
+  54   2          }
+C51 COMPILER V9.60.7.0   DS1302                                                            12/16/2023 14:39:45 PAGE 2   
+
+  55   1      
+  56   1          for(i = 0; i < 8; i++)
+  57   1          {
+  58   2              DS1302_IO = Data & (0x01 << i);
+  59   2              DS1302_SCLK = 1;
+  60   2              DS1302_SCLK = 0;
+  61   2          }
+  62   1      
+  63   1          DS1302_CE = 0;//恢复运行
+  64   1          DS1302_SCLK = 0;
+  65   1      }
+  66          
+  67          
+  68          unsigned char DS1302_Read(unsigned char Command)
+  69          //读取当前时间
+  70          {
+  71   1          unsigned char Data = 0x00;
+  72   1          unsigned char i = 0;
+  73   1          Command |= 0x01;//保证第一位置1
+  74   1          DS1302_CE = 1;
+  75   1          for(i = 0; i < 8; i++)
+  76   1          {
+  77   2              DS1302_CE = 1;
+  78   2              DS1302_IO = Command & (0x01 << i);
+  79   2              DS1302_SCLK = 0;
+  80   2              DS1302_SCLK = 1;
+  81   2              //在最后一个循环时为上升沿
+  82   2          }
+  83   1      
+  84   1      
+  85   1          for(i = 0; i < 8; i++)
+  86   1          {
+  87   2              DS1302_SCLK = 1;
+  88   2              //重复置1，减去一个脉冲周期
+  89   2              DS1302_SCLK = 0;
+  90   2              //读取一位，同时使执行结束时为0
+  91   2              if(DS1302_IO)
+  92   2              {
+  93   3                  Data |= (0x01 << i);
+  94   3                  //从最低位开始读取，应存到最低位
+  95   3              }
+  96   2          }
+  97   1      
+  98   1          DS1302_CE = 0;
+  99   1          DS1302_SCLK = 0;
+ 100   1      
+ 101   1          DS1302_IO = 0;//这里需要将IO重置，否则读取的数据会在输入数据和ff之间横跳
+ 102   1          return Data;
+ 103   1      }
+ 104          
+ 105          
+ 106          void DS1302_SetTime()
+ 107          //将时间写入DS1302
+ 108          {
+ 109   1          DS1302_Write(DS1302_WP, 0x00);//关闭写保护
+ 110   1          DS1302_Write(DS1302_HOUR, DEC_To_BCD(DS1302_Time[0][0]));
+ 111   1          DS1302_Write(DS1302_MINUTE, DEC_To_BCD(DS1302_Time[0][1]));
+ 112   1          DS1302_Write(DS1302_SECOND, DEC_To_BCD(DS1302_Time[0][2]));
+ 113   1          DS1302_Write(DS1302_WP, 0x81);//打开写保护
+ 114   1      }
+ 115          
+ 116          
+C51 COMPILER V9.60.7.0   DS1302                                                            12/16/2023 14:39:45 PAGE 3   
+
+ 117          void DS1302_ReadTime()
+ 118          //读取当前时间
+ 119          {
+ 120   1          unsigned char Temp = 0;
+ 121   1      
+ 122   1          Temp = DS1302_Read(DS1302_HOUR);
+ 123   1          DS1302_Time[0][0] = BCD_To_DEC(Temp);
+ 124   1          Temp = DS1302_Read(DS1302_MINUTE);
+ 125   1          DS1302_Time[0][1] = BCD_To_DEC(Temp);
+ 126   1          Temp = DS1302_Read(DS1302_SECOND);
+ 127   1          DS1302_Time[0][2] = BCD_To_DEC(Temp);
+ 128   1      }
+ 129          
+ 130          
+ 131          
+ 132          unsigned char DEC_To_BCD(unsigned char DEC_Num)
+ 133          //十进制转BCD
+ 134          {
+ 135   1          return DEC_Num / 10 * 16 + DEC_Num % 10;
+ 136   1      }
+ 137          
+ 138          
+ 139          unsigned char BCD_To_DEC(unsigned char BCD_Num)
+ 140          {
+ 141   1          return BCD_Num / 16 * 10 + BCD_Num % 16;
+ 142   1      }
+ 143          
+ 144          
+ 145          void DS1302_TimeChange(unsigned char Change_Mode)
+ 146          //Change_Mode为0时调整时钟，为1时调整闹钟
+ 147          {
+ 148   1          static unsigned char Time_Select = 0;//保证变量不被删除，防止在每一次调用函数的时
+             -候都置0
+ 149   1          unsigned char Key_Num = 0;
+ 150   1          static unsigned char last_Key_num = 0;
+ 151   1          
+ 152   1          Key_Num = MatrixKey();
+ 153   1          if((Key_Num == 1 && last_Key_num == 0) || (Key_Num == 5 && last_Key_num == 0)) Time_Select = 0;
+ 154   1          if((Key_Num == 2 && last_Key_num == 0) || (Key_Num == 6 && last_Key_num == 0)) Time_Select = 1;
+ 155   1          if((Key_Num == 3 && last_Key_num == 0) || (Key_Num == 7 && last_Key_num == 0)) Time_Select = 2;
+ 156   1      
+ 157   1      
+ 158   1          switch(Time_Select)
+ 159   1          {
+ 160   2              case 0:
+ 161   2                  NixieTube_DisplayTime(Change_Mode, 1);
+ 162   2                  //合法性检查
+ 163   2                  if(Key_Num == 1 && last_Key_num == 0)
+ 164   2                  {
+ 165   3                      DS1302_Time[Change_Mode][0]++;
+ 166   3                      if(DS1302_Time[Change_Mode][0] > 23) DS1302_Time[Change_Mode][0] = 0;
+ 167   3                  }
+ 168   2                  if(Key_Num == 5 && last_Key_num == 0)
+ 169   2                  {
+ 170   3                      DS1302_Time[Change_Mode][0]--;
+ 171   3                      if(DS1302_Time[Change_Mode][0] < 0) DS1302_Time[Change_Mode][0] = 23;
+ 172   3                  }
+ 173   2                  last_Key_num = Key_Num;
+ 174   2                  break;
+ 175   2          
+ 176   2      
+ 177   2              case 1:
+C51 COMPILER V9.60.7.0   DS1302                                                            12/16/2023 14:39:45 PAGE 4   
+
+ 178   2                  NixieTube_DisplayTime(Change_Mode, 2);
+ 179   2                  if(Key_Num == 2 && last_Key_num == 0)
+ 180   2                  {
+ 181   3                      DS1302_Time[Change_Mode][1]++;
+ 182   3                      if(DS1302_Time[Change_Mode][1] > 59) DS1302_Time[Change_Mode][1] = 0;
+ 183   3                  }
+ 184   2                  if(Key_Num == 6 && last_Key_num == 0)
+ 185   2                  {
+ 186   3                      DS1302_Time[Change_Mode][1]--;
+ 187   3                      if(DS1302_Time[Change_Mode][1] < 0) DS1302_Time[Change_Mode][1] = 59;
+ 188   3                  }
+ 189   2                  last_Key_num = Key_Num;
+ 190   2                  break;
+ 191   2          
+ 192   2              case 2:
+ 193   2                  NixieTube_DisplayTime(Change_Mode, 3);
+ 194   2                  if(Key_Num == 3 && last_Key_num == 0)
+ 195   2                  {
+ 196   3                      DS1302_Time[Change_Mode][2]++;
+ 197   3                      if(DS1302_Time[Change_Mode][2] > 59) DS1302_Time[Change_Mode][2] = 0;
+ 198   3                  }
+ 199   2                  if(Key_Num == 7 && last_Key_num == 0)
+ 200   2                  {
+ 201   3                      DS1302_Time[Change_Mode][2]--;
+ 202   3                      if(DS1302_Time[Change_Mode][2] < 0) DS1302_Time[Change_Mode][2] = 59;
+ 203   3                  }
+ 204   2                  last_Key_num = Key_Num;
+ 205   2                  break;
+ 206   2      
+ 207   2              default:
+ 208   2                  last_Key_num = Key_Num;
+ 209   2          }
+ 210   1      }
+ 211          
+ 212          
+ 213          unsigned char Is_Clock_Alarm()
+ 214          //判断闹钟是否响起
+ 215          {
+ 216   1          unsigned char i = 0;
+ 217   1          for(i = 0; i < 3; i++)
+ 218   1          {
+ 219   2              if(DS1302_Time[0][i] != DS1302_Time[1][i]) return 0;
+ 220   2          }
+ 221   1          return 1;
+ 222   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    719    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      8       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

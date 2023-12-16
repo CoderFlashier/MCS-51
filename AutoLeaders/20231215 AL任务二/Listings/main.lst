@@ -1,0 +1,161 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              12/16/2023 14:28:36 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: F:\keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <STC89C5xRC.H>
+   2          #include "DS1302.h"
+   3          #include "NixieTube_Display.h"
+   4          #include "Delay.h"
+   5          #include "Uart.h"
+   6          #include "Timer0.h"
+   7          #include "MatrixKey.h"
+   8          #include "MatrixLED.h"
+   9          
+  10          
+  11          void main()
+  12          {
+  13   1          unsigned char Current_Time = 0;
+  14   1          unsigned char Mode = 0;
+  15   1         // unsigned char Time_Select = 0;//在调整时间的时候选择位数
+  16   1          unsigned char Is_Clock_On = 0;//闹钟是否开启
+  17   1          unsigned char Clock_Mark = 0;//闹钟是否响起
+  18   1      
+  19   1      
+  20   1          unsigned char Key_Num = 0;
+  21   1          unsigned char last_Key_Num = 0;
+  22   1      
+  23   1          unsigned char i = 0;
+  24   1          int j = 0;
+  25   1      
+  26   1      
+  27   1          DS1302_Init();
+  28   1          DS1302_SetTime();//设定初始时间
+  29   1      
+  30   1          Uart_Init();
+  31   1          Timer0_Init();
+  32   1      
+  33   1          while(1)
+  34   1          {
+  35   2              Key_Num = MatrixKey();
+  36   2              if(Key_Num == 8 && last_Key_Num == 0)
+  37   2              //在矩阵键盘的输入中不添加死循环，通过对上一次按键值和这一次的按键
+             -值的判断来实现按键不影响程序运行的效果
+  38   2              {
+  39   3                  if(Mode = 1) DS1302_SetTime(); //设置调整后的时间
+*** WARNING C276 IN LINE 39 OF main.c: constant in condition expression
+  40   3                  Mode = 0;//计时模式
+  41   3                  //Time_Select = 0;//重置时间选择
+  42   3              }
+  43   2      
+  44   2              if(Key_Num == 4 && last_Key_Num == 0)
+  45   2              {
+  46   3                  Mode = 1;//调整时间
+  47   3              }
+  48   2              if(Key_Num == 16 && last_Key_Num == 0)
+  49   2              {
+  50   3                  Uart_SentTime();//发送时间
+  51   3              }
+  52   2              
+C51 COMPILER V9.60.7.0   MAIN                                                              12/16/2023 14:28:36 PAGE 2   
+
+  53   2              if(Key_Num == 9 && last_Key_Num == 0)
+  54   2              {
+  55   3                  Mode = 3;//调整闹钟时间
+  56   3              }
+  57   2      
+  58   2              if(Key_Num == 10 && last_Key_Num == 0)
+  59   2              {
+  60   3                  Is_Clock_On++;
+  61   3                  Is_Clock_On %= 2;//开关闹钟
+  62   3              }
+  63   2              last_Key_Num = Key_Num;
+  64   2      
+  65   2      
+  66   2              switch(Mode)
+  67   2              {   
+  68   3                  case 0:
+  69   3                  //计时模式
+  70   3                      if(Is_Clock_On == 1)
+  71   3                      {
+  72   4                          NixieTube_Display(8, 11);
+  73   4                          if(Clock_Mark == 0) Clock_Mark = Is_Clock_Alarm();
+  74   4      
+  75   4                          if(Clock_Mark == 1)
+  76   4                          {
+  77   5                              j++;
+  78   5                              if(j < 2000) NixieTube_DisplayAlarm();//显示CLOC模拟闹钟响起
+  79   5                              DS1302_ReadTime();
+  80   5                              if(j == 2000)
+  81   5                              {
+  82   6                                  j = 0;
+  83   6                                  Clock_Mark = 0;
+  84   6                              }
+  85   5                          }
+  86   4                          else
+  87   4                          {
+  88   5                              DS1302_ReadTime();
+  89   5                              NixieTube_DisplayTime(0, 0);
+  90   5                          }
+  91   4                      }
+  92   3                      else
+  93   3                      {
+  94   4                          DS1302_ReadTime();
+  95   4                          NixieTube_DisplayTime(0, 0);
+  96   4                      }
+  97   3                      break;
+  98   3              
+  99   3                  case 1:
+ 100   3                  //调节模式
+ 101   3                      DS1302_TimeChange(0);
+ 102   3                      //第一个参数置0时调整时钟，置1调整闹钟
+ 103   3                      if(Is_Clock_On == 1) NixieTube_Display(8, 11);
+ 104   3                      break;
+ 105   3                  
+ 106   3                  case 3: 
+ 107   3                  //调整闹钟
+ 108   3                      DS1302_TimeChange(1);
+ 109   3                      if(Is_Clock_On == 1)  NixieTube_Display(8, 11);
+ 110   3                      break;
+ 111   3              }
+ 112   2      
+ 113   2          }
+ 114   1      }
+C51 COMPILER V9.60.7.0   MAIN                                                              12/16/2023 14:28:36 PAGE 3   
+
+ 115          
+ 116          
+ 117          unsigned char Flicker_Mark = 0;//用于标记亮灭
+ 118          void Timer0_Isr(void) interrupt 1
+ 119          {
+ 120   1          static unsigned int T0_count = 0;
+ 121   1      
+ 122   1        TL0 = 0x66;
+ 123   1        TH0 = 0xFC;
+ 124   1      
+ 125   1          T0_count++;
+ 126   1          if(T0_count >= 500)
+ 127   1          {
+ 128   2              T0_count = 0;
+ 129   2              Flicker_Mark = ~Flicker_Mark;
+ 130   2          }
+ 131   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    299    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3       9
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

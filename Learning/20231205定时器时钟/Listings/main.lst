@@ -1,0 +1,83 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              12/05/2023 19:14:54 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: F:\keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <STC89C5xRC.H>
+   2          #include "Delay.h"
+   3          #include "LCD1602.h"
+   4          #include "Timer0.h"
+   5          
+   6          
+   7          unsigned char second = 0;
+   8          unsigned char minute = 0;
+   9          unsigned char hour = 0;
+  10          void main()
+  11          {
+  12   1          Timer0_Init();
+  13   1          LCD_Init();
+  14   1          LCD_ShowString(1, 1, "Clock:");
+  15   1          while(1)
+  16   1          {
+  17   2              LCD_ShowNum(2, 1, hour, 2);
+  18   2              LCD_ShowString(2, 3, ":");
+  19   2              LCD_ShowNum(2, 4, minute, 2);
+  20   2              LCD_ShowString(2, 6, ":");
+  21   2              LCD_ShowNum(2, 7, second, 2);
+  22   2          }
+  23   1      }
+  24          
+  25          
+  26          void Timer0_Isr(void) interrupt 1
+  27          {
+  28   1          static unsigned int T0_count = 0;
+  29   1      
+  30   1        TL0 = 0x66;
+  31   1        TH0 = 0xFC; 
+  32   1      
+  33   1          T0_count++;
+  34   1          if(T0_count >= 1000)
+  35   1          {
+  36   2              T0_count = 0;
+  37   2              second++;
+  38   2              //LCD_ShowNum不宜放在这里，该函数运行时间较长
+  39   2              //中断函数中不应执行时间较长的操作
+  40   2      
+  41   2              if(second == 60)
+  42   2              {
+  43   3                  second = 0;
+  44   3                  minute++;
+  45   3                  if(minute == 60)
+  46   3                  {
+  47   4                      minute = 0;
+  48   4                      hour++;
+  49   4                      if(hour == 24)
+  50   4                      {
+  51   5                          hour = 0;
+  52   5                      }
+  53   4                  }
+  54   3                  
+C51 COMPILER V9.60.7.0   MAIN                                                              12/05/2023 19:14:54 PAGE 2   
+
+  55   3              }
+  56   2          }
+  57   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    160    ----
+   CONSTANT SIZE    =      9    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

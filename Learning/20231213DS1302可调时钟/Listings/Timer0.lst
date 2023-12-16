@@ -1,0 +1,70 @@
+C51 COMPILER V9.60.7.0   TIMER0                                                            12/14/2023 21:36:48 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE TIMER0
+OBJECT MODULE PLACED IN .\Objects\Timer0.obj
+COMPILER INVOKED BY: F:\keil5\C51\BIN\C51.EXE Timer0.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\Time
+                    -r0.lst) TABS(2) OBJECT(.\Objects\Timer0.obj)
+
+line level    source
+
+   1          #include<STC89C5xRC.H>
+   2          
+   3          /**
+   4           * @brief 定时器0初始化，1ms @11.0592MHz
+   5           * @param 无
+   6           * @retval 无
+   7           */
+   8          
+   9          void Timer0_Init(void)    //1毫秒@11.0592MHz
+  10          {
+  11   1        AUXR &= 0x7F;     //定时器时钟12T模式
+  12   1        TMOD &= 0xF0;     //设置定时器模式
+  13   1        TMOD |= 0x01;     //设置定时器模式
+  14   1        TL0 = 0x66;       //设置定时初始值
+  15   1        TH0 = 0xFC;       //设置定时初始值
+  16   1        TF0 = 0;        //清除TF0标志
+  17   1        TR0 = 1;        //定时器0开始计时
+  18   1        ET0 = 1;        //使能定时器0中断
+  19   1          EA = 1;//需要自己加
+  20   1          PT0 = 0;//同上
+  21   1      }
+  22          
+  23          
+  24          /*
+  25          void Timer0_Isr(void) interrupt 1
+  26          {
+  27              static unsigned int T0_count = 0;
+  28              //定义为静态局部变量，使变量在函数结束后仍保留
+  29          
+  30            TL0 = 0x66;       //设置定时初始值
+  31              //这里比自己设置的多一位，因为自己算出来的64613 + 922 = 65535 不会溢出，要�
+             -�加1才溢出
+  32          
+  33            TH0 = 0xFC;       //设置定时初始值
+  34          
+  35              T0_count++;
+  36              if(T0_count >= 1000)
+  37              {
+  38                  T0_count = 0;
+  39                  P20 = ~P20;
+  40              }
+  41          }
+  42          */
+  43          //不容易模块化的部分，放在此处作为模板
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     26    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+C51 COMPILER V9.60.7.0   TIMER0                                                            12/14/2023 21:36:48 PAGE 2   
+
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

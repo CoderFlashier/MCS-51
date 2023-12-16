@@ -1,0 +1,95 @@
+C51 COMPILER V9.60.7.0   NIXIETUBE_DISPLAY                                                 12/02/2023 11:05:39 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE NIXIETUBE_DISPLAY
+OBJECT MODULE PLACED IN .\Objects\NixieTube_Display.obj
+COMPILER INVOKED BY: F:\keil5\C51\BIN\C51.EXE NixieTube_Display.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Li
+                    -stings\NixieTube_Display.lst) TABS(2) OBJECT(.\Objects\NixieTube_Display.obj)
+
+line level    source
+
+   1          #include "Delay.h"
+   2          #include<STC89C5xRC.H>
+   3          
+   4          //0， 1， 2， 3， 4， 5， 6， 7， 8， 9, U, -对应的段码
+   5          unsigned char NixieTable[12] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x3E, 0x40};
+   6          
+   7          
+   8          void NixieTube_Display(unsigned char location, unsigned char num)
+   9          //分别传入显示位置、显示内容
+  10          {
+  11   1          switch(location)
+  12   1          //选择显示位置
+  13   1          {
+  14   2              case 1:
+  15   2                  P24 = 1;
+  16   2                  P23 = 1;
+  17   2                  P22 = 1;
+  18   2                  break;
+  19   2      
+  20   2              case 2:
+  21   2                  P24 = 1;
+  22   2                  P23 = 1;
+  23   2                  P22 = 0;
+  24   2                  break;
+  25   2      
+  26   2              case 3:
+  27   2                  P24 = 1;
+  28   2                  P23 = 0;
+  29   2                  P22 = 1;
+  30   2                  break;
+  31   2      
+  32   2              case 4:
+  33   2                  P24 = 1;
+  34   2                  P23 = 0;
+  35   2                  P22 = 0;
+  36   2                  break;
+  37   2      
+  38   2              case 5:
+  39   2                  P24 = 0;
+  40   2                  P23 = 1;
+  41   2                  P22 = 1;
+  42   2                  break;
+  43   2      
+  44   2              case 6:
+  45   2                  P24 = 0;
+  46   2                  P23 = 1;
+  47   2                  P22 = 0;
+  48   2                  break;
+  49   2      
+  50   2              case 7:
+  51   2                  P24 = 0;
+  52   2                  P23 = 0;
+  53   2                  P22 = 1;
+  54   2                  break;
+C51 COMPILER V9.60.7.0   NIXIETUBE_DISPLAY                                                 12/02/2023 11:05:39 PAGE 2   
+
+  55   2      
+  56   2              case 8:
+  57   2                  P24 = 0;
+  58   2                  P23 = 0;
+  59   2                  P22 = 0;
+  60   2                  break;
+  61   2          }
+  62   1      
+  63   1          P0 =  NixieTable[num];
+  64   1          Delay(1);
+  65   1          //让数码管稳定显示，否则亮度会变低
+  66   1          //注意STC89C52RC的晶振频率为11.0592MHz，在创建延时函数时应注意选择
+  67   1          P0 = 0x00;
+  68   1          //清零
+  69   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    109    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     12    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

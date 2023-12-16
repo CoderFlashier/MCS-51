@@ -1,0 +1,9 @@
+Build target 'Target 1'
+compiling main.c...
+main.c(81): warning C276: constant in condition expression
+main.c(82): warning C294: unreachable code
+linking...
+Program Size: data=42.0 xdata=0 code=953
+creating hex file from ".\Objects\project"...
+".\Objects\project" - 0 Error(s), 2 Warning(s).
+Build Time Elapsed:  00:00:01

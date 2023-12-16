@@ -1,0 +1,102 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              11/25/2023 21:20:36 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: F:\keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <STC89C5xRC.H>
+   2          #include<string.h>
+   3          #include<stdio.h>
+   4          #include"Delay.h"
+   5          #include"MatrixKey.h"
+   6          #include"LCD1602.h"
+   7          
+   8          char password[8] = {0};
+   9          //注意\n需要占一个位置
+  10          int count = 0;
+  11          int Keynum = 0;
+  12          
+  13          
+  14          void main()
+  15          {
+  16   1          LCD_Init();
+  17   1          LCD_ShowString(1, 1, "Password:");
+  18   1          while(1)
+  19   1          {
+  20   2              Keynum = MatrixKey();
+  21   2              if(Keynum)
+  22   2              {
+  23   3                  if(Keynum <= 10)
+  24   3                  //判断是否输入
+  25   3                  {
+  26   4                      count++;
+  27   4                      if(count <= 7)
+  28   4                      {
+  29   5                          switch(Keynum)
+  30   5                          {
+  31   6                              case 1:strcat(password, "1");break;
+  32   6                              case 2:strcat(password, "2");break;
+  33   6                              case 3:strcat(password, "3");break;
+  34   6                              case 4:strcat(password, "4");break;
+  35   6                              case 5:strcat(password, "5");break;
+  36   6                              case 6:strcat(password, "6");break;
+  37   6                              case 7:strcat(password, "7");break;
+  38   6                              case 8:strcat(password, "8");break;
+  39   6                              case 9:strcat(password, "8");break;
+  40   6                              case 10:strcat(password, "0");break;
+  41   6                          }
+  42   5                      }
+  43   4                      LCD_ShowString(2, 1, password);
+  44   4                  }
+  45   3      
+  46   3                  if(Keynum == 11)
+  47   3                  {
+  48   4                      if(strcmp(password, "7355608") == 0)
+  49   4                      //判断密码是否正确
+  50   4                      {
+  51   5                          LCD_ShowString(1, 1, "                ");
+  52   5                          LCD_ShowString(2, 1, "                ");
+  53   5                          LCD_ShowString(1, 1, "Bomb has been");
+  54   5                          LCD_ShowString(2, 1, "planted!");
+C51 COMPILER V9.60.7.0   MAIN                                                              11/25/2023 21:20:36 PAGE 2   
+
+  55   5                      }
+  56   4                      else
+  57   4                      {
+  58   5                          count = 0;
+  59   5                          strcpy(password, "");
+  60   5                          LCD_ShowString(1, 13, "ERR");
+  61   5                          LCD_ShowString(2, 1, "        ");
+  62   5                      }
+  63   4                  }
+  64   3      
+  65   3                  if(Keynum == 12)
+  66   3                  {
+  67   4                      strcpy(password, "");
+  68   4                      LCD_ShowString(2, 1, "        ");
+  69   4                      count = 0;
+  70   4                  }
+  71   3                  
+  72   3              }
+  73   2              //LCD_ShowString(2, 1, password);
+  74   2              //由于要显示文字，实时显示密码就不能放在这里了
+  75   2          }
+  76   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    422    ----
+   CONSTANT SIZE    =     90    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     12    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

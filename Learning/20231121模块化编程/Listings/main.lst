@@ -1,0 +1,41 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              11/21/2023 20:24:51 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: F:\keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include<STC89C5xRC.H>
+   2          #include"Delay.h"
+   3          #include"Nixie_display.h"
+   4          //<>表示在安装目录寻找文件
+   5          //""表示在当前目录寻找文件
+   6          
+   7          
+   8          void main()
+   9          {
+  10   1          while(1)
+  11   1          {
+  12   2              Delay(5000);
+  13   2              NixieTube_Display(3, 3);
+  14   2              Delay(5000);
+  15   2              NixieTube_Display(4, 4);
+  16   2          }
+  17   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     30    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
